@@ -2,11 +2,11 @@ services:
 
   mlflow:
     restart: always
-    build: C:/Users/Kote/Documents/project/MLOps-zoomcamp-final-project/mlflow
+    build: ./mlflow
     image: mlflow_server
     container_name: mlflow_server
     volumes:
-      - "c:/Users/Kote/Documents/project/MLOps-zoomcamp-final-project/mlflow/mlartifacts:/mlartifacts"
+      - ./mlflow/mlartifacts:/mlartifacts
     ports:
       - "5000:5000"
     networks:
@@ -14,7 +14,7 @@ services:
     command: mlflow server --backend-store-uri sqlite:///mlflowdb.db --host 0.0.0.0
 
   train:
-    build: C:/Users/Kote/Documents//project/MLOps-zoomcamp-final-project/train
+    build: ./train
     image: train_model
     container_name: train_model
     depends_on:
@@ -24,11 +24,11 @@ services:
     command: python train_model.py
 
   register:
-    build: C:/Users/Kote/Documents/project/MLOps-zoomcamp-final-project/register_model
+    build: ./register_model
     image: register_model
     container_name: register_model
     volumes:
-      - "c:/Users/Kote/Documents/project/MLOps-zoomcamp-final-project/web_service:/model"
+      - ./web_service:/model
     depends_on:
       train:
         condition: service_completed_successfully
@@ -37,7 +37,7 @@ services:
 
   web-service:
     restart: always
-    build: C:/Users/Kote/Documents/project/MLOps-zoomcamp-final-project/web_service
+    build: ./web_service
     image: car_price_prediction_service
     container_name: car_price_prediction_service
     depends_on:
