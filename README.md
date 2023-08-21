@@ -47,6 +47,11 @@ There are two main parts of the project: **train model** and **deploy it**. Belo
 
    When the first step is done you can deploy you model
 
+   To deploy the model go to **web_service** folder and run make file: **make deploy**
+   It will deploy docker container with production model, install awsebcli, create project in AWS Elastic Beanstalk and deploy container to it
+
+   *If you run makefile from local computer you should specify aws keys*
+
 
 # 5. Walkthrough instruction
 1. Create AWS EC2 instance (I took Ubuntu 22.04 lts)
@@ -89,3 +94,4 @@ There are two main parts of the project: **train model** and **deploy it**. Belo
 
 
 
+eb terminate car-price-env-new

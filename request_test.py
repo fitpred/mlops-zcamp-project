@@ -10,7 +10,7 @@ car = {
 
 
 host = 'localhost:9696'
-# host = 'car-price-env.eba-areqcmpa.us-east-1.elasticbeanstalk.com'
+# host = '.....elasticbeanstalk.com'
 
 url = f'http://{host}/predict'
 
