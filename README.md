@@ -1,8 +1,8 @@
 # MLOps-zoomcamp-project
 
 
-## Project description
-For my project I used USA cars dataset that contains information about cars with milage: brand, model, year, mileage, price, etc
+# 1. Project description
+For my project I used **USA cars dataset** that contains information about cars with milage: brand, model, year, mileage, price, etc
 https://github.com/rashida048/Datasets/blob/master/USA_cars_datasets.csv
 
 So imagine you work for car dealer that buy and sell used cars. Business is growing and managers ask you for help to define the price of the cars in order to speed up buying process
@@ -12,45 +12,43 @@ The task is build web service that accept information about the car and return e
 Note: as well as the datasource containes only 2500 rows I augmented data (just by adding some Gaussian noise) to make it looks like real world task, because usually you don't need ML to deal with such small amount of data
 
 
-## Prerequisites
+# 2. Prerequisites
 - AWS account, IAM user with access to AWS Beanstalk, aws key id, aws secret key
-- Prefect cloud account, api key
-
-
-
-## Tech stack
-- Cloud: AWS Elastic Beanstalk (deploy web app)
-- ML experiment tracking tool:  Mlflow
-- Orchestration: Prefect Cloud
+- Prefect cloud account, api key, export it to enviroment " export PREFECT_API_KEY = '' "
 - Docker, Docker compose
 
 
-## Reproducibility
-Main steps:
-   - create AWS EC2 instance
-   - ssh to it, install docker, docker-compose, clone repository
-   - prepare prediction model by running docker compose
-   - deployin that model to cloud
-
-Below you find step-by-step guide to reproduce the project
+# 3. Tech stack
+- Cloud: **AWS EC2, AWS Elastic Beanstalk**
+- ML experiment tracking:  **Mlflow**
+- Workflow Orchestration: **Prefect Cloud**
+- Containerization: **Docker, Docker compose**
 
 
-first step is dockerized and fully automated
+# 4. Reproducibility
+There are two main parts of the project: **train model** and **deploy it**. Below you can find step-by-step guide to reproduce the project, but here is brief overview *(I assumed that you cloned repo and moved to root directory)*:
+
+   ### **Train model**
+
+   There are 3 docker containers to train model: mlflow, train_model, register_model. Data for training is saved in *train* folder - *USA_cars_datasets_upd.csv.gz* 
+
+   You can train your model on **remote host** as well as **localy** (but if your OS is Windows you need to change paths in docker-compose.yaml file: in **build** section you should specify full path to folders: *mlflow*, *train_model*, *register_model*)
+
+   If you decided to use your local computer and you have docker, docker-compose installed - **all that you need is run docker compose: docker-compose up**
+
+   It will run 3 containers in turn:
+   - launch mlflow server, 
+   - train_model - run train model script with connection to mlflow server and prefect cloud
+   - register_model - choose the best model by MAE, register it and promote to production, than save it to *web_service* folder.
+
+   So when the last container register_model finishes, you can open mlflow ui 127.0.0.1:500, find experiments as well as production model in model registry. Also you'll see *model.pkl* file in web_service folder
+
+   **Deploy model**
+
+   When the first step is done you can deploy you model
 
 
- - run docker-compose that contains things:
-   - run mlflow server
-   - train model
-   - register model, promote to production
-   - run web service local to test it (and deploy on aws later)
- - deploy the best model (or model of your choise) to the cloud
-
-
-ssh -i file.pem username@ip-address
-
-
-
-## walkthrough instruction
+# 5. Walkthrough instruction
 1. Create AWS EC2 instance (I took Ubuntu 22.04 lts)
 2. Connect to it: ssh -i file.pem username@ip-address
 3. Install Docker, Docker compose, add your user to docker group, install pip, export prefect PREFECT_API_KEY
@@ -88,10 +86,6 @@ ssh -i file.pem username@ip-address
       - enter Y as anwer on question "It appears you are using Docker/ Is this correct?"
       - select a platform branch (I went with 1 - Amazon Linux 2023)
       - set up ssh for your instance - as you wish, I said no
-
-
-P.S. You can reproduce steps 1-7 localy, but if your OS is Windows, you'll need to change paths in docker-compose.yaml file
-
 
 
 
