@@ -5,23 +5,24 @@
 For my project I used USA cars dataset that contains information about cars with milage: brand, model, year, mileage, price, etc
 https://github.com/rashida048/Datasets/blob/master/USA_cars_datasets.csv
 
-So imagine you work for car dealer that buy and sell used cars. Business is growing and managers ask you for help to define the price of the cars in order by speed up buying process
+So imagine you work for car dealer that buy and sell used cars. Business is growing and managers ask you for help to define the price of the cars in order to speed up buying process
 
 The task is build web service that accept information about the car and return estimated price.
 
-As well as the datasource containes only 2500 rows I augmented data (just by adding some Gaussian noise) to make it looks like real world task (usually you don't need ML to deal small amount of data)
+Note: as well as the datasource containes only 2500 rows I augmented data (just by adding some Gaussian noise) to make it looks like real world task, because usually you don't need ML to deal with such small amount of data
 
 
 ## Prerequisites
-AWS account, aws key id, aws secret key
-Prefect cloud account, workspace id,  account id, api key
+- AWS account, IAM user with access to AWS Beanstalk, aws key id, aws secret key
+- Prefect cloud account, api key
+
 
 
 ## Tech stack
-Cloud: AWS Elastic Beanstalk (deploy web app)
-ML experiment tracking tool:  Mlflow
-Orchestration: Prefect Cloud
-Docker, Docker compose
+- Cloud: AWS Elastic Beanstalk (deploy web app)
+- ML experiment tracking tool:  Mlflow
+- Orchestration: Prefect Cloud
+- Docker, Docker compose
 
 
 ## Reproducibility
@@ -52,7 +53,7 @@ ssh -i file.pem username@ip-address
 ## walkthrough instruction
 1. Create AWS EC2 instance (I took Ubuntu 22.04 lts)
 2. Connect to it: ssh -i file.pem username@ip-address
-3. Install pip, Docker, Docker compose, add your user to docker group: https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-20-04
+3. Install Docker, Docker compose, add your user to docker group, install pip, export prefect PREFECT_API_KEY
 4. Create projects folder, go to it and clone repo
 5. Launch Mlflow server, connect to prefect cloud, train model and register it: (all this done in docker compose)
    go to project root folder and run docker-compose up - it will launch mlflow server, run train model scripts connected to mlflow server and prefect cloud, register model and save it to web-service folder. If you want to open mlflow UI on your laptop, you should forward port 5000
@@ -90,7 +91,6 @@ ssh -i file.pem username@ip-address
 
 
 P.S. You can reproduce steps 1-7 localy, but if your OS is Windows, you'll need to change paths in docker-compose.yaml file
-
 
 
 
