@@ -19,6 +19,7 @@ services:
     container_name: train_model
     environment:
       - PREFECT_API_KEY=${PREFECT_API_KEY}
+      - PREFECT_WORKSPACE_ID=${PREFECT_WORKSPACE_ID}
     depends_on:
       - mlflow
     networks:

@@ -34,7 +34,7 @@ There are two main parts of the project: **train model** and **deploy it**. Belo
 
    You can train your model on **remote host** as well as **localy** (but if your OS is Windows you need to change paths in docker-compose.yaml file: in **build** section you should specify full path to folders: *mlflow*, *train_model*, *register_model*)
 
-   If you decided to use your local computer and you have docker, docker-compose installed - **all that you need is run docker compose: docker-compose up**
+   If you decided to use your local computer and you have docker, docker-compose installed - **all that you need is run docker compose: docker-compose up** *(remember that you need to export PREFECT_API_KEY before)*
 
    It will run 3 containers in turn:
    - launch mlflow server, 
