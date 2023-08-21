@@ -50,7 +50,11 @@ ssh -i file.pem username@ip-address
 
 
 ## walkthrough
-
+1 Create AWS EC2 instance (I took Ubuntu 22.04 lts)
+2 ssh to it: ssh -i file.pem username@ip-address
+3 install Docker, Docker compose, add your user to docker group: https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-20-04
+4 Create projects folder, go to it and clone repo
+5 go to project root folder and 
 
 
 
