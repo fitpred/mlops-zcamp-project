@@ -30,7 +30,7 @@ There are two main parts of the project: **train model** and **deploy it**. Belo
 
    ### **Train model**
 
-   There are 3 docker containers to train the model: mlflow, train_model, register_model. Data for training is saved in *train* folder - *USA_cars_datasets_upd.csv.gz* 
+   There are 3 docker containers to  train the model: mlflow, train_model, register_model. Data for training is saved in *train* folder - *USA_cars_datasets_upd.csv.gz* 
 
    You can train your model on **remote host** as well as **locally** (but if your OS is Windows you need to change paths in docker-compose.yaml file: in **build** section you should specify full path to folders: *mlflow*, *train_model*, *register_model*)
 
