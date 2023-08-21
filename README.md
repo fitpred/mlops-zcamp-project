@@ -42,98 +42,56 @@ first step is dockerized and fully automated
    - train model
    - register model, promote to production
    - run web service local to test it (and deploy on aws later)
- - deploy the best model (or model of your choise) to the cloud     
+ - deploy the best model (or model of your choise) to the cloud
 
 
 ssh -i file.pem username@ip-address
 
 
 
-## walkthrough
-1 Create AWS EC2 instance (I took Ubuntu 22.04 lts)
-2 ssh to it: ssh -i file.pem username@ip-address
-3 install Docker, Docker compose, add your user to docker group: https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-20-04
-4 Create projects folder, go to it and clone repo
-5 go to project root folder and 
-
-
-
-1 git clone  repository 
-2 in project root folder create .env file with aws and prefect keys
-3 run docker-compose up
-   by runnig docker compose you're:
-   - launching mlflow server - src/mlflow
-   - optimize hyperparams and train model - src/train (with using Mlflow as experiment tracking service and Prefect as a workflow orchestration - so you are able to see models on http://127.0.0.1:5000, and train workflow on prefect cloud in a workspace you created)
-   - register best model and promote it to production - src/register_model (model pickle file will be created and saved to web_service folder for deploying)
-   - run deployed service with gunicorn server
-4 test service by running "python request_test.py"
-
-In terms of model tuning - I just tried different alpha params for the simplicity
-
-P.S. Ff your OS is windows and you want to run project localy, you need to change paths in docker compose
-
-
-
-pipenv install awsebcli --dev
-pip install awsebcli
-pip install mlflow
+## walkthrough instruction
+1. Create AWS EC2 instance (I took Ubuntu 22.04 lts)
+2. Connect to it: ssh -i file.pem username@ip-address
+3. Install pip, Docker, Docker compose, add your user to docker group: https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-20-04
+4. Create projects folder, go to it and clone repo
+5. Launch Mlflow server, connect to prefect cloud, train model and register it: (all this done in docker compose)
+   go to project root folder and run docker-compose up - it will launch mlflow server, run train model scripts connected to mlflow server and prefect cloud, register model and save it to web-service folder. If you want to open mlflow UI on your laptop, you should forward port 5000
+6. Build docker container to deploy: go to web-service folder, run: docker build -t car-price-prediction-service:v1 .
+7. Test it by: 
+   - running docker container with service: docker run -it --rm -p 9696:9696 car-price-prediction-service:v1
+   - go to project root directory and send request: python3 request_test.py (you can play with requested parameters)
+8. Prepare AWS Elastic Beanstalk for deploying: 
+   - on AWS create IAM user with access to Elastic Beanstalk service and create secret key
+   - on your host machine install awsebcli (pip install awsebcli), check installation by eb --version (1)
+   - go to web-service folder and run eb init and follow the prompts(2)
+9. Test it localy by: 
+   running service: eb local run --port 9696 (make sure port 9696 is not busy)
+   sending request: python3 request_test.py
+10. Deploy on AWS: eb create car-price-env
+   After that you cat go to AWS website to Elastic Beanstalk service, Here you'll see your service is up and running. Also you can find 
+   WARNING: this service is open for the world, so don't forget to stop it by: eb terminate car-price-env
+11. Now you can access your service from anywere by domain that you can find in Elastic Beanstalk - Applications - car-price-prediction-service.
+   For example, copy request_test.py to your laptop, change "host" to domain you've got and run it: python request_test.py
 
 
 
 
+(1) if it says eb: command not found you need to:
+   export PATH="/usr/local/bin:$PATH"
+   source .profile
+
+(2) prompts:
+      - enter your region
+      - enter you access id and secret key
+      - set application name (car-price-prediction-service)
+      - enter Y as anwer on question "It appears you are using Docker/ Is this correct?"
+      - select a platform branch (I went with 1 - Amazon Linux 2023)
+      - set up ssh for your instance - as you wish, I said no
+
+
+P.S. You can reproduce steps 1-7 localy, but if your OS is Windows, you'll need to change paths in docker-compose.yaml file
 
 
 
 
-# ssh to aws instance
-ssh -i .aws/mlops-zcamp-project.pem ubuntu@ec2-54-208-232-243.compute-1.amazonaws.com
 
-
-
-
-
-
-
-
-create aws account
-create account on prefect cloud 
-   create project
-   create API_KEY keys
-   save it to .env file in project root directory
-install docker, docker-compose
- - create Prefect cloud acctount
-    - create workspace
-
-
-
-
-eb init 
-follow the prompt
- - enter your region
- - enter you access id and secret key
- - set application name
- - enter Y as anwer on question "It appears you are using Docker/ Is this correct?"
- - select a platform branch (I went with 1 - Amazon Linux 2023)
- - set up ssh for your instance - as you wish, I said no
-
-
-car-price-prediction-service
-
-
--p docker -r us-east-1 car-price-service
-
-
-# run localy
-eb local run --port 9696
-
-# create eb enviroment
-eb create car-price-env
-
-Attention: this service will be available for the hole world, so don't forget to stop it
-
-
-# terminate eb enviroment
-eb terminate car-price-env
-
-
-you could be charged while working with AWS services, but not significant

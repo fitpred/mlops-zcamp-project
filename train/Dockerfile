@@ -8,6 +8,8 @@ RUN pip install pandas
 RUN pip install lightgbm scikit-learn
 RUN pip install mlflow prefect
 
+RUN prefect cloud login -k ${PREFECT_API_KEY}
+
 WORKDIR /app
 COPY USA_cars_datasets_upd.csv.gz USA_cars_datasets_upd.csv.gz
 COPY train_model.py train_model.py 

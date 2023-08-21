@@ -17,6 +17,8 @@ services:
     build: ./train
     image: train_model
     container_name: train_model
+    environment:
+      - PREFECT_API_KEY=${PREFECT_API_KEY}
     depends_on:
       - mlflow
     networks:
